@@ -19,12 +19,14 @@ NSNumber *FB_XCAXAIsElementAttribute;
 void (*XCSetDebugLogger)(id <XCDebugLogDelegate>);
 id<XCDebugLogDelegate> (*XCDebugLogger)(void);
 
+NSArray<NSNumber *> *(*XCAXAccessibilityAttributesForStringAttributes)(NSArray *);
+
 __attribute__((constructor)) void FBLoadXCTestSymbols(void)
 {
   NSString *XC_kAXXCAttributeIsVisible = *(NSString*__autoreleasing*)FBRetrieveXCTestSymbol("XC_kAXXCAttributeIsVisible");
   NSString *XC_kAXXCAttributeIsElement = *(NSString*__autoreleasing*)FBRetrieveXCTestSymbol("XC_kAXXCAttributeIsElement");
 
-  NSArray *(*XCAXAccessibilityAttributesForStringAttributes)(NSArray *list) =
+  XCAXAccessibilityAttributesForStringAttributes =
   (NSArray<NSNumber *> *(*)(NSArray *))FBRetrieveXCTestSymbol("XCAXAccessibilityAttributesForStringAttributes");
 
   XCSetDebugLogger = (void (*)(id <XCDebugLogDelegate>))FBRetrieveXCTestSymbol("XCSetDebugLogger");

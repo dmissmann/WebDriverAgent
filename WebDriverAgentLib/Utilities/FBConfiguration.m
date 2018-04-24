@@ -107,6 +107,10 @@ static NSUInteger FBMaxTypingFrequency = 60;
   return FBShouldUseSingletonTestManager;
 }
 
++ (BOOL)shouldUseEagerSnapshotLoading {
+  return YES;
+}
+
 #pragma mark Private
 
 + (NSRange)bindingPortRangeFromArguments

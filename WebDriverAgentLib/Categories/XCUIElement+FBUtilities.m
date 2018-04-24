@@ -18,11 +18,14 @@
 #import "FBPredicate.h"
 #import "FBRunLoopSpinner.h"
 #import "FBXCodeCompatibility.h"
+#import "FBXCTestDaemonsProxy.h"
 #import "XCAXClient_iOS.h"
+#import "XCTElementSetTransformer-Protocol.h"
+#import "XCTestManager_ManagerInterface-Protocol.h"
+#import "XCTestPrivateSymbols.h"
+#import "XCTRunnerDaemonSession.h"
 #import "XCUIElement+FBWebDriverAttributes.h"
 #import "XCUIElementQuery.h"
-#import "XCTElementSetTransformer-Protocol.h"
-
 
 @implementation XCUIElement (FBUtilities)
 
@@ -69,6 +72,13 @@ static dispatch_once_t onceUseSnapshotForDebugDescriptionToken;
 
 - (XCElementSnapshot *)fb_lastSnapshot
 {
+  if ([FBConfiguration shouldUseEagerSnapshotLoading]) {
+    id lastSnapshot = [self fb_eagerlyLoadedSnapshot];
+    // If we don't get a snapshot here fall back to the default approach
+    if (lastSnapshot != nil) {
+      return lastSnapshot;
+    }
+  }
   XCUIElementQuery *query = [self query];
   dispatch_once(&onceUseSnapshotForDebugDescriptionToken, ^{
     FBShouldUseSnapshotForDebugDescription = [query respondsToSelector:NSSelectorFromString(@"elementSnapshotForDebugDescription")];
@@ -78,6 +88,50 @@ static dispatch_once_t onceUseSnapshotForDebugDescriptionToken;
   }
   [self resolve];
   return self.lastSnapshot;
+}
+
+- (XCElementSnapshot *)fb_eagerlyLoadedSnapshot {
+  if (![XCElementSnapshot.class respondsToSelector:@selector(snapshotAttributesForElementSnapshotKeyPaths:)]) {
+    return nil;
+  }
+  
+  [self resolve];
+  
+  id defaultParameters = [[XCAXClient_iOS sharedClient] defaultParameters];
+  
+  // Names of the properties to load. There won't be lazy loading for missing properties,
+  // thus missing properties will lead to wrong results
+  NSArray<NSString *> *propertyNames = @[
+                                         @"identifier",
+                                         @"value",
+                                         @"label",
+                                         @"frame",
+                                         @"enabled"
+                                         ];
+  
+  NSArray *attributes = [XCElementSnapshot snapshotAttributesForElementSnapshotKeyPaths:propertyNames];
+  NSArray *axAttributes = XCAXAccessibilityAttributesForStringAttributes(attributes);
+  
+  __block XCElementSnapshot *snapshot = nil;
+  dispatch_group_t resolveGroup = dispatch_group_create();
+  dispatch_group_enter(resolveGroup);
+  
+  id<XCTestManager_ManagerInterface> proxy = [FBXCTestDaemonsProxy testRunnerProxy];
+  
+  [proxy _XCT_snapshotForElement:self.lastSnapshot.accessibilityElement
+                      attributes:axAttributes
+                      parameters:defaultParameters
+                           reply:^(XCElementSnapshot *s, NSError *error) {
+                             if (error != nil) {
+                               dispatch_group_leave(resolveGroup);
+                               return;
+                             }
+                             snapshot = s;
+                             dispatch_group_leave(resolveGroup);
+                           }];
+  
+  dispatch_group_wait(resolveGroup, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC));
+  return snapshot;
 }
 
 - (XCElementSnapshot *)fb_lastSnapshotFromQuery
