@@ -91,10 +91,6 @@ static dispatch_once_t onceUseSnapshotForDebugDescriptionToken;
 }
 
 - (XCElementSnapshot *)fb_eagerlyLoadedSnapshot {
-  if (![XCElementSnapshot.class respondsToSelector:@selector(snapshotAttributesForElementSnapshotKeyPaths:)]) {
-    return nil;
-  }
-  
   [self resolve];
   
   id defaultParameters = [[XCAXClient_iOS sharedClient] defaultParameters];
@@ -106,7 +102,8 @@ static dispatch_once_t onceUseSnapshotForDebugDescriptionToken;
                                          @"value",
                                          @"label",
                                          @"frame",
-                                         @"enabled"
+                                         @"enabled",
+                                         @"elementType"
                                          ];
   
   NSArray *attributes = [XCElementSnapshot snapshotAttributesForElementSnapshotKeyPaths:propertyNames];

@@ -13,6 +13,7 @@
 
 #include "TargetConditionals.h"
 #import "XCTestPrivateSymbols.h"
+#import "XCElementSnapshot.h"
 
 static NSUInteger const DefaultStartingPort = 8100;
 static NSUInteger const DefaultPortRange = 100;
@@ -108,7 +109,10 @@ static NSUInteger FBMaxTypingFrequency = 60;
 }
 
 + (BOOL)shouldUseEagerSnapshotLoading {
-  return YES;
+  if (![XCElementSnapshot.class respondsToSelector:@selector(snapshotAttributesForElementSnapshotKeyPaths:)]) {
+    return NO;
+  }
+  return [NSProcessInfo processInfo].environment[@"USE_EAGER_SNAPSHOT_LOADING"] != nil;
 }
 
 #pragma mark Private
