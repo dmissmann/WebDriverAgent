@@ -16,7 +16,6 @@
 #import "FBSpringboardApplication.h"
 #import "XCUIApplication+FBHelpers.h"
 #import "XCUIElement+FBIsVisible.h"
-#import "FBConfiguration.h"
 
 @interface XCUIApplicationHelperTests : FBIntegrationTestCase
 @end
