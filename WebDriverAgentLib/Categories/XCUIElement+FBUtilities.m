@@ -73,7 +73,7 @@ static dispatch_once_t onceUseSnapshotForDebugDescriptionToken;
 - (XCElementSnapshot *)fb_lastSnapshot
 {
   if ([FBConfiguration shouldLoadSnapshotWithAttributes]) {
-    id lastSnapshot = [self fb_eagerlyLoadedSnapshot];
+    id lastSnapshot = [self fb_snapshotWithAttributes];
     // If we don't get a snapshot here fall back to the default approach
     if (lastSnapshot != nil) {
       return lastSnapshot;
@@ -90,7 +90,7 @@ static dispatch_once_t onceUseSnapshotForDebugDescriptionToken;
   return self.lastSnapshot;
 }
 
-- (XCElementSnapshot *)fb_eagerlyLoadedSnapshot {
+- (XCElementSnapshot *)fb_snapshotWithAttributes {
   if (![XCElementSnapshot.class respondsToSelector:@selector(snapshotAttributesForElementSnapshotKeyPaths:)]) {
     return nil;
   }
@@ -116,7 +116,7 @@ static dispatch_once_t onceUseSnapshotForDebugDescriptionToken;
     axAttributes = [axAttributes arrayByAddingObject:FB_XCAXAIsVisibleAttribute];
   }
   
-  __block XCElementSnapshot *snapshot = nil;
+  __block XCElementSnapshot *snapshotWithAttributes = nil;
   dispatch_group_t resolveGroup = dispatch_group_create();
   dispatch_group_enter(resolveGroup);
   
@@ -125,17 +125,17 @@ static dispatch_once_t onceUseSnapshotForDebugDescriptionToken;
   [proxy _XCT_snapshotForElement:self.lastSnapshot.accessibilityElement
                       attributes:axAttributes
                       parameters:defaultParameters
-                           reply:^(XCElementSnapshot *s, NSError *error) {
+                           reply:^(XCElementSnapshot *snapshot, NSError *error) {
                              if (error != nil) {
                                dispatch_group_leave(resolveGroup);
                                return;
                              }
-                             snapshot = s;
+                             snapshotWithAttributes = snapshot;
                              dispatch_group_leave(resolveGroup);
                            }];
   
   dispatch_group_wait(resolveGroup, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC));
-  return snapshot;
+  return snapshotWithAttributes;
 }
 
 - (XCElementSnapshot *)fb_lastSnapshotFromQuery
