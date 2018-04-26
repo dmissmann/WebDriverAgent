@@ -22,7 +22,6 @@
   [super setUp];
   unsetenv("USE_PORT");
   unsetenv("VERBOSE_LOGGING");
-  unsetenv("USE_EAGER_SNAPSHOT_LOADING");
 }
 
 - (void)testBindingPortDefault
@@ -45,17 +44,6 @@
 {
   setenv("VERBOSE_LOGGING", "YES", 1);
   XCTAssertTrue([FBConfiguration verboseLoggingEnabled]);
-}
-
-- (void)testEagerSnapshotLoadingDefault
-{
-  XCTAssertFalse([FBConfiguration shouldUseEagerSnapshotLoading]);
-}
-
-- (void)testSetEagerSnapshotLoadingOverwrite
-{
-  setenv("USE_EAGER_SNAPSHOT_LOADING", "", 1);
-  XCTAssertTrue([FBConfiguration shouldUseEagerSnapshotLoading]);
 }
 
 @end

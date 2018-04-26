@@ -19,7 +19,7 @@ NSNumber *FB_XCAXAIsElementAttribute;
 void (*XCSetDebugLogger)(id <XCDebugLogDelegate>);
 id<XCDebugLogDelegate> (*XCDebugLogger)(void);
 
-NSArray<NSNumber *> *(*XCAXAccessibilityAttributesForStringAttributes)(NSArray *);
+NSArray<NSNumber *> *(*XCAXAccessibilityAttributesForStringAttributes)(id);
 
 __attribute__((constructor)) void FBLoadXCTestSymbols(void)
 {
@@ -27,7 +27,7 @@ __attribute__((constructor)) void FBLoadXCTestSymbols(void)
   NSString *XC_kAXXCAttributeIsElement = *(NSString*__autoreleasing*)FBRetrieveXCTestSymbol("XC_kAXXCAttributeIsElement");
 
   XCAXAccessibilityAttributesForStringAttributes =
-  (NSArray<NSNumber *> *(*)(NSArray *))FBRetrieveXCTestSymbol("XCAXAccessibilityAttributesForStringAttributes");
+  (NSArray<NSNumber *> *(*)(id))FBRetrieveXCTestSymbol("XCAXAccessibilityAttributesForStringAttributes");
 
   XCSetDebugLogger = (void (*)(id <XCDebugLogDelegate>))FBRetrieveXCTestSymbol("XCSetDebugLogger");
   XCDebugLogger = (id<XCDebugLogDelegate>(*)(void))FBRetrieveXCTestSymbol("XCDebugLogger");

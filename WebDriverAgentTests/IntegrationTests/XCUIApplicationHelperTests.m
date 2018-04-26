@@ -16,6 +16,7 @@
 #import "FBSpringboardApplication.h"
 #import "XCUIApplication+FBHelpers.h"
 #import "XCUIElement+FBIsVisible.h"
+#import "FBConfiguration.h"
 
 @interface XCUIApplicationHelperTests : FBIntegrationTestCase
 @end
@@ -59,16 +60,6 @@
 {
   XCTAssertNotNil(self.testedApplication.fb_tree);
   XCTAssertNotNil(self.testedApplication.fb_accessibilityTree);
-}
-
-- (void)testApplicationTreeEagerLoadingEquality
-{
-  unsetenv("USE_EAGER_SNAPSHOT_LOADING");
-  NSDictionary *tree = self.testedApplication.fb_tree;
-  setenv("USE_EAGER_SNAPSHOT_LOADING", "", 1);
-  NSDictionary *eagerTree = self.testedApplication.fb_tree;
-  
-  XCTAssertEqualObjects(tree, eagerTree);
 }
 
 - (void)disabled_testDeactivateApplication

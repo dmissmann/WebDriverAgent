@@ -72,7 +72,7 @@ static dispatch_once_t onceUseSnapshotForDebugDescriptionToken;
 
 - (XCElementSnapshot *)fb_lastSnapshot
 {
-  if ([FBConfiguration shouldUseEagerSnapshotLoading]) {
+  if ([FBConfiguration shouldLoadSnapshotWithAttributes]) {
     id lastSnapshot = [self fb_eagerlyLoadedSnapshot];
     // If we don't get a snapshot here fall back to the default approach
     if (lastSnapshot != nil) {
@@ -91,6 +91,9 @@ static dispatch_once_t onceUseSnapshotForDebugDescriptionToken;
 }
 
 - (XCElementSnapshot *)fb_eagerlyLoadedSnapshot {
+  if (![XCElementSnapshot.class respondsToSelector:@selector(snapshotAttributesForElementSnapshotKeyPaths:)]) {
+    return nil;
+  }
   [self resolve];
   
   id defaultParameters = [[XCAXClient_iOS sharedClient] defaultParameters];
@@ -106,8 +109,12 @@ static dispatch_once_t onceUseSnapshotForDebugDescriptionToken;
                                          @"elementType"
                                          ];
   
-  NSArray *attributes = [XCElementSnapshot snapshotAttributesForElementSnapshotKeyPaths:propertyNames];
+  NSSet *attributes = [XCElementSnapshot snapshotAttributesForElementSnapshotKeyPaths:propertyNames];
+  
   NSArray *axAttributes = XCAXAccessibilityAttributesForStringAttributes(attributes);
+  if (![axAttributes containsObject:FB_XCAXAIsVisibleAttribute]) {
+    axAttributes = [axAttributes arrayByAddingObject:FB_XCAXAIsVisibleAttribute];
+  }
   
   __block XCElementSnapshot *snapshot = nil;
   dispatch_group_t resolveGroup = dispatch_group_create();
