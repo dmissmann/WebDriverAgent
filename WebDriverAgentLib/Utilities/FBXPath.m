@@ -305,7 +305,8 @@ NSString *const XCElementSnapshotXPathQueryEvaluationException = @"XCElementSnap
       [((XCUIElement *)root).application fb_waitUntilSnapshotIsStable];
     }
     if ([root isKindOfClass:XCUIApplication.class]) {
-      currentSnapshot = ((XCUIApplication *)root).fb_lastSnapshot;
+      XCUIApplication *application = (XCUIApplication *)root;
+      currentSnapshot = application.fb_snapshotWithAttributes ?: application.fb_lastSnapshot;
       NSArray<XCUIElement *> *windows = [((XCUIElement *)root) fb_filterDescendantsWithSnapshots:currentSnapshot.children];
       NSMutableArray<XCElementSnapshot *> *windowsSnapshots = [NSMutableArray array];
       for (XCUIElement* window in windows) {
