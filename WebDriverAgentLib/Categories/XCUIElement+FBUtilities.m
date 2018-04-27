@@ -73,7 +73,7 @@ static dispatch_once_t onceUseSnapshotForDebugDescriptionToken;
 - (XCElementSnapshot *)fb_lastSnapshot
 {
   if ([FBConfiguration shouldLoadSnapshotWithAttributes]) {
-    id lastSnapshot = [self fb_snapshotWithAttributes];
+    XCElementSnapshot *lastSnapshot = [self fb_snapshotWithAttributes];
     // If we don't get a snapshot here fall back to the default approach
     if (lastSnapshot != nil) {
       return lastSnapshot;
@@ -90,31 +90,47 @@ static dispatch_once_t onceUseSnapshotForDebugDescriptionToken;
   return self.lastSnapshot;
 }
 
-- (XCElementSnapshot *)fb_snapshotWithAttributes {
-  if (![XCElementSnapshot.class respondsToSelector:@selector(snapshotAttributesForElementSnapshotKeyPaths:)]) {
+- (nullable XCElementSnapshot *)fb_snapshotWithAttributes {
+  static BOOL canLoadSnapshotWithAttributes = NO;
+  static dispatch_once_t canLoadSnapshotWithAttributesToken;
+  dispatch_once(&canLoadSnapshotWithAttributesToken, ^{
+    if ([XCElementSnapshot.class respondsToSelector:@selector(snapshotAttributesForElementSnapshotKeyPaths:)]) {
+      canLoadSnapshotWithAttributes = YES;
+    }
+  });
+  
+  if (!canLoadSnapshotWithAttributes) {
     return nil;
   }
+  
   [self resolve];
   
-  id defaultParameters = [[XCAXClient_iOS sharedClient] defaultParameters];
   
-  // Names of the properties to load. There won't be lazy loading for missing properties,
-  // thus missing properties will lead to wrong results
-  NSArray<NSString *> *propertyNames = @[
-                                         @"identifier",
-                                         @"value",
-                                         @"label",
-                                         @"frame",
-                                         @"enabled",
-                                         @"elementType"
-                                         ];
   
-  NSSet *attributes = [XCElementSnapshot snapshotAttributesForElementSnapshotKeyPaths:propertyNames];
+  static NSDictionary *defaultParameters;
+  static NSArray *axAttributes;
   
-  NSArray *axAttributes = XCAXAccessibilityAttributesForStringAttributes(attributes);
-  if (![axAttributes containsObject:FB_XCAXAIsVisibleAttribute]) {
-    axAttributes = [axAttributes arrayByAddingObject:FB_XCAXAIsVisibleAttribute];
-  }
+  static dispatch_once_t initializeAttributesAndParametersToken;
+  dispatch_once(&initializeAttributesAndParametersToken, ^{
+    defaultParameters = [[XCAXClient_iOS sharedClient] defaultParameters];
+    // Names of the properties to load. There won't be lazy loading for missing properties,
+    // thus missing properties will lead to wrong results
+    NSArray<NSString *> *propertyNames = @[
+                      @"identifier",
+                      @"value",
+                      @"label",
+                      @"frame",
+                      @"enabled",
+                      @"elementType"
+                      ];
+    
+    NSSet *attributes = [XCElementSnapshot snapshotAttributesForElementSnapshotKeyPaths:propertyNames];
+    
+    axAttributes = XCAXAccessibilityAttributesForStringAttributes(attributes);
+    if (![axAttributes containsObject:FB_XCAXAIsVisibleAttribute]) {
+      axAttributes = [axAttributes arrayByAddingObject:FB_XCAXAIsVisibleAttribute];
+    }
+  });
   
   __block XCElementSnapshot *snapshotWithAttributes = nil;
   dispatch_group_t resolveGroup = dispatch_group_create();
@@ -134,7 +150,11 @@ static dispatch_once_t onceUseSnapshotForDebugDescriptionToken;
                              dispatch_group_leave(resolveGroup);
                            }];
   
-  dispatch_group_wait(resolveGroup, dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC));
+  static const unsigned int SNAPSHOT_TIMEOUT_SEC = 5;
+  if (dispatch_group_wait(resolveGroup, dispatch_time(DISPATCH_TIME_NOW, SNAPSHOT_TIMEOUT_SEC * NSEC_PER_SEC)) != 0) {
+    [FBLogger logFmt:@"Getting the snapshot timed out after %u seconds", SNAPSHOT_TIMEOUT_SEC];
+    return nil;
+  }
   return snapshotWithAttributes;
 }
 

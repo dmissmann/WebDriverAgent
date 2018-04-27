@@ -21,8 +21,6 @@
 #import "XCUIElement+FBIsVisible.h"
 #import "XCUIElement+FBUtilities.h"
 #import "XCUIElement+FBWebDriverAttributes.h"
-#import "XCTRunnerDaemonSession.h"
-#import "XCTestPrivateSymbols.h"
 
 const static NSTimeInterval FBMinimumAppSwitchWait = 3.0;
 
