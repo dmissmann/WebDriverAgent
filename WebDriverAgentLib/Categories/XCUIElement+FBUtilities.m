@@ -72,13 +72,6 @@ static dispatch_once_t onceUseSnapshotForDebugDescriptionToken;
 
 - (XCElementSnapshot *)fb_lastSnapshot
 {
-  if ([FBConfiguration shouldLoadSnapshotWithAttributes]) {
-    XCElementSnapshot *lastSnapshot = [self fb_snapshotWithAttributes];
-    // If we don't get a snapshot here fall back to the default approach
-    if (lastSnapshot != nil) {
-      return lastSnapshot;
-    }
-  }
   XCUIElementQuery *query = [self query];
   dispatch_once(&onceUseSnapshotForDebugDescriptionToken, ^{
     FBShouldUseSnapshotForDebugDescription = [query respondsToSelector:NSSelectorFromString(@"elementSnapshotForDebugDescription")];
@@ -91,21 +84,11 @@ static dispatch_once_t onceUseSnapshotForDebugDescriptionToken;
 }
 
 - (nullable XCElementSnapshot *)fb_snapshotWithAttributes {
-  static BOOL canLoadSnapshotWithAttributes = NO;
-  static dispatch_once_t canLoadSnapshotWithAttributesToken;
-  dispatch_once(&canLoadSnapshotWithAttributesToken, ^{
-    if ([XCElementSnapshot.class respondsToSelector:@selector(snapshotAttributesForElementSnapshotKeyPaths:)]) {
-      canLoadSnapshotWithAttributes = YES;
-    }
-  });
-  
-  if (!canLoadSnapshotWithAttributes) {
+  if (![FBConfiguration shouldLoadSnapshotWithAttributes]) {
     return nil;
   }
   
   [self resolve];
-  
-  
   
   static NSDictionary *defaultParameters;
   static NSArray *axAttributes;

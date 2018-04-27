@@ -84,9 +84,6 @@
   if (requirements[@"shouldUseSingletonTestManager"]) {
     [FBConfiguration setShouldUseSingletonTestManager:[requirements[@"shouldUseSingletonTestManager"] boolValue]];
   }
-  if (requirements[@"shouldLoadSnapshotWithAttributes"]) {
-    [FBConfiguration setShouldLoadSnapshotWithAttributes:[requirements[@"shouldLoadSnapshotWithAttributes"] boolValue]];
-  }
 
   FBApplication *app = [[FBApplication alloc] initPrivateWithPath:appPath bundleID:bundleID];
   app.fb_shouldWaitForQuiescence = [requirements[@"shouldWaitForQuiescence"] boolValue];

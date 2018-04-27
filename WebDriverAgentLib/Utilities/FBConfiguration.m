@@ -23,7 +23,6 @@ static BOOL FBShouldUseSingletonTestManager = YES;
 static BOOL FBShouldUseCompactResponses = YES;
 static NSString *FBElementResponseAttributes = @"type,label";
 static NSUInteger FBMaxTypingFrequency = 60;
-static BOOL FBShouldLoadSnapshotWithAttributes = NO;
 
 @implementation FBConfiguration
 
@@ -109,12 +108,15 @@ static BOOL FBShouldLoadSnapshotWithAttributes = NO;
   return FBShouldUseSingletonTestManager;
 }
 
-+ (void)setShouldLoadSnapshotWithAttributes:(BOOL)value {
-  FBShouldLoadSnapshotWithAttributes = value;
-}
-
 + (BOOL)shouldLoadSnapshotWithAttributes {
-  return FBShouldLoadSnapshotWithAttributes;
+  static BOOL shouldLoadSnapshotWithAttributes = NO;
+  static dispatch_once_t shouldLoadSnapshotWithAttributesToken;
+  dispatch_once(&shouldLoadSnapshotWithAttributesToken, ^{
+    if ([XCElementSnapshot.class respondsToSelector:@selector(snapshotAttributesForElementSnapshotKeyPaths:)]) {
+      shouldLoadSnapshotWithAttributes = YES;
+    }
+  });
+  return shouldLoadSnapshotWithAttributes;
 }
 
 #pragma mark Private
