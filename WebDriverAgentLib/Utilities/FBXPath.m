@@ -305,12 +305,11 @@ NSString *const XCElementSnapshotXPathQueryEvaluationException = @"XCElementSnap
       [((XCUIElement *)root).application fb_waitUntilSnapshotIsStable];
     }
     if ([root isKindOfClass:XCUIApplication.class]) {
-      XCUIApplication *application = (XCUIApplication *)root;
-      currentSnapshot = application.fb_snapshotWithAttributes ?: application.fb_lastSnapshot;
+      currentSnapshot = ((XCUIApplication *)root).fb_lastSnapshot;
       NSArray<XCUIElement *> *windows = [((XCUIElement *)root) fb_filterDescendantsWithSnapshots:currentSnapshot.children];
       NSMutableArray<XCElementSnapshot *> *windowsSnapshots = [NSMutableArray array];
       for (XCUIElement* window in windows) {
-        [windowsSnapshots addObject:window.fb_lastSnapshot];
+        [windowsSnapshots addObject:window.fb_snapshotWithAttributes ?: window.fb_lastSnapshot];
       }
       children = windowsSnapshots.copy;
     } else {
