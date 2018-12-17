@@ -103,10 +103,7 @@ static dispatch_once_t onceTestRunnerDaemonClass;
     return NO;
   }
   id<NSObject> obj = (id<NSObject>)proxy;
-  if (![obj respondsToSelector:@selector(_XCT_setAXTimeout:reply:)]) {
-    return NO;
-  }
-  return YES;
+  return [obj respondsToSelector:@selector(_XCT_setAXTimeout:reply:)];
 }
 
 @end
