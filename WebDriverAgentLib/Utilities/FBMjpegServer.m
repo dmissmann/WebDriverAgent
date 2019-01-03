@@ -28,7 +28,7 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
 
 @interface FBMjpegServer()
 
-@property (nonatomic) NSTimer *mainTimer;
+@property (nonatomic) dispatch_source_t mainTimer;
 @property (nonatomic) dispatch_queue_t backgroundQueue;
 @property (nonatomic) NSMutableArray<GCDAsyncSocket *> *activeClients;
 @property (nonatomic) NSUInteger currentFramerate;
@@ -54,20 +54,22 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
 
 - (void)resetTimer:(NSUInteger)framerate
 {
-  if (self.mainTimer && self.mainTimer.valid) {
-    [self.mainTimer invalidate];
-  }
   self.currentFramerate = framerate;
   NSTimeInterval timerInterval = 1.0 / ((0 == framerate || framerate > MAX_FPS) ? MAX_FPS : framerate);
-  self.mainTimer = [NSTimer scheduledTimerWithTimeInterval:timerInterval
-                                                   repeats:YES
-                                                     block:^(NSTimer * _Nonnull timer) {
-                                                       if (self.currentFramerate == FBConfiguration.mjpegServerFramerate) {
-                                                         [self streamScreenshot];
-                                                       } else {
-                                                         [self resetTimer:FBConfiguration.mjpegServerFramerate];
-                                                       }
-                                                     }];
+  uint64_t intervalTime = (int64_t) (timerInterval * NSEC_PER_SEC);
+  
+  self.mainTimer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, self.backgroundQueue);
+  dispatch_time_t startTime = dispatch_time(DISPATCH_TIME_NOW, 0);
+  dispatch_source_set_timer(self.mainTimer, startTime, intervalTime, 0);
+  dispatch_source_set_event_handler(self.mainTimer, ^{
+    if (self.currentFramerate == FBConfiguration.mjpegServerFramerate) {
+      [self streamScreenshot];
+    } else {
+      [self resetTimer:FBConfiguration.mjpegServerFramerate];
+    }
+  });
+  dispatch_resume(self.mainTimer);
+
 }
 
 - (void)streamScreenshot

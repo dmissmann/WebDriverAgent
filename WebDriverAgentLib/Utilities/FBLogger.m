@@ -28,17 +28,11 @@
 
 + (void)verboseLog:(NSString *)message
 {
-  if (!FBConfiguration.verboseLoggingEnabled) {
-    return;
-  }
   [self log:message];
 }
 
 + (void)verboseLogFmt:(NSString *)format, ...
 {
-  if (!FBConfiguration.verboseLoggingEnabled) {
-    return;
-  }
   va_list args;
   va_start(args, format);
   NSLogv(format, args);
