@@ -29,6 +29,8 @@ static NSUInteger FBMaxTypingFrequency = 60;
 static NSUInteger FBMjpegServerScreenshotQuality = 25;
 static NSUInteger FBMjpegServerFramerate = 10;
 static NSUInteger FBScreenshotQuality = 1;
+static NSUInteger DefaultMjpegScalingFactor = 100;
+static NSUInteger DefaultMjpegCompressionFactor = 30;
 
 @implementation FBConfiguration
 
@@ -72,6 +74,26 @@ static NSUInteger FBScreenshotQuality = 1;
   }
 
   return DefaultMjpegServerPort;
+}
+
++ (NSInteger)mjpegScalingFactor
+{
+  if (NSProcessInfo.processInfo.environment[@"MJPEG_SCALING_FACTOR"] &&
+      [NSProcessInfo.processInfo.environment[@"MJPEG_SCALING_FACTOR"] length] > 0) {
+    return [NSProcessInfo.processInfo.environment[@"MJPEG_SCALING_FACTOR"] integerValue];
+  }
+
+  return DefaultMjpegScalingFactor;
+}
+
++ (NSInteger)mjpegCompressionFactor
+{
+  if (NSProcessInfo.processInfo.environment[@"MJPEG_COMPRESSION_FACTOR"] &&
+      [NSProcessInfo.processInfo.environment[@"MJPEG_COMPRESSION_FACTOR"] length] > 0) {
+    return [NSProcessInfo.processInfo.environment[@"MJPEG_COMPRESSION_FACTOR"] integerValue];
+  }
+
+  return DefaultMjpegCompressionFactor;
 }
 
 + (BOOL)verboseLoggingEnabled
