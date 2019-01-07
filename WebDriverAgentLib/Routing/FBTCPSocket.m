@@ -83,4 +83,9 @@
   }
 }
 
+- (NSTimeInterval) socket:(GCDAsyncSocket *)sock shouldTimeoutWriteWithTag:(long)tag elapsed:(NSTimeInterval)elapsed bytesDone:(NSUInteger)length {
+  [FBLogger logFmt:@"Write with tag %lu timed out", tag];
+  return 1.0;
+}
+
 @end

@@ -19,6 +19,7 @@
 #import "XCTestManager_ManagerInterface-Protocol.h"
 #import "FBXCTestDaemonsProxy.h"
 #import "XCUIScreen.h"
+#import "FBCIImageScaler.h"
 
 static const NSTimeInterval SCREENSHOT_TIMEOUT = 0.5;
 static const NSUInteger MAX_FPS = 60;
@@ -32,6 +33,8 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
 @property (nonatomic, readonly) dispatch_queue_t backgroundQueue;
 @property (nonatomic, readonly) NSMutableArray<GCDAsyncSocket *> *activeClients;
 @property (nonatomic, readonly) mach_timebase_info_data_t timebaseInfo;
+@property (nonatomic, readonly) FBCIImageScaler *imageScaler;
+@property (nonatomic) NSUInteger tagCounter;
 
 @end
 
@@ -48,6 +51,8 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
     dispatch_async(_backgroundQueue, ^{
       [self streamScreenshot];
     });
+    _imageScaler = [[FBCIImageScaler alloc] initWithScalingFactor:[FBConfiguration mjpegScalingFactor]
+                                               compressionQuality:[FBConfiguration mjpegCompressionFactor]];
   }
   return self;
 }
@@ -62,6 +67,7 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
     });
   } else {
     // Try to do our best to keep the FPS at a decent level
+    [FBLogger verboseLogFmt:@"Screenshot overdue by %.2fs", llabs(nextTickDelta) / (double)NSEC_PER_SEC];
     dispatch_async(self.backgroundQueue, ^{
       [self streamScreenshot];
     });
@@ -94,6 +100,9 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
                                             uti:(__bridge id)kUTTypeJPEG
                              compressionQuality:compressionQuality
                                       withReply:^(NSData *data, NSError *error) {
+    if (error != nil) {
+      [FBLogger logFmt:@"Error taking screenshot: %@", [error description]];
+    }
     screenshotData = data;
     dispatch_semaphore_signal(sem);
   }];
@@ -102,17 +111,23 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
     [self scheduleNextScreenshotWithInterval:timerInterval timeStarted:timeStarted];
     return;
   }
+  [self.imageScaler submitImage:screenshotData
+              completionHandler:^(NSData * _Nonnull scaled) {
+                [self sendScreenshot:scaled];
+              }];
+  [self scheduleNextScreenshotWithInterval:timerInterval timeStarted:timeStarted];
+}
 
+- (void)sendScreenshot:(NSData *)screenshotData {
   NSString *chunkHeader = [NSString stringWithFormat:@"--BoundaryString\r\nContent-type: image/jpg\r\nContent-Length: %@\r\n\r\n", @(screenshotData.length)];
   NSMutableData *chunk = [[chunkHeader dataUsingEncoding:NSUTF8StringEncoding] mutableCopy];
   [chunk appendData:screenshotData];
   [chunk appendData:(id)[@"\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
   @synchronized (self.activeClients) {
     for (GCDAsyncSocket *client in self.activeClients) {
-      [client writeData:chunk withTimeout:-1 tag:0];
+      [client writeData:chunk withTimeout:1.0 tag:self.tagCounter++];
     }
   }
-  [self scheduleNextScreenshotWithInterval:timerInterval timeStarted:timeStarted];
 }
 
 + (BOOL)canStreamScreenshots
