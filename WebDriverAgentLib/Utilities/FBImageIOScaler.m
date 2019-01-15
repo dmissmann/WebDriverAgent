@@ -12,10 +12,6 @@
 #import <CoreServices/CoreServices.h>
 #import "FBLogger.h"
 
-/**
- Scales images and compresses it to JPEG using Image I/O
- It allows to enqueue only a single screenshot. If a new one arrives before the currently queued gets discared
- */
 @interface FBImageIOScaler ()
 
 @property (nonatomic, readonly) CGFloat scalingFactor;

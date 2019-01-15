@@ -11,6 +11,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ Scales images and compresses it to JPEG using Image I/O
+ It allows to enqueue only a single screenshot. If a new one arrives before the currently queued gets discared
+ */
 @interface FBImageIOScaler : NSObject
 
 - (id)initWithScalingFactor:(NSUInteger)scalingFactor compressionQuality:(NSUInteger)compressionQuality;
