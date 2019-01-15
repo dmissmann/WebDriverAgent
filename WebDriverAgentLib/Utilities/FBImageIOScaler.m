@@ -26,7 +26,8 @@
 
 @implementation FBImageIOScaler
 
-- (id)initWithScalingFactor:(NSUInteger)scalingFactor compressionQuality:(NSUInteger)compressionQuality {
+- (id)initWithScalingFactor:(NSUInteger)scalingFactor compressionQuality:(NSUInteger)compressionQuality
+{
   self = [super init];
   if (self) {
     _scalingFactor = scalingFactor / 100.0f;
@@ -40,7 +41,8 @@
   }
   return self;
 }
-- (void)submitImage:(NSData *)image completionHandler:(void(^)(NSData *scaled))completionHandler {
+- (void)submitImage:(NSData *)image completionHandler:(void(^)(NSData *scaled))completionHandler
+{
   if (fabs(1.0 - self.scalingFactor) < DBL_EPSILON) {
     completionHandler(image);
     return;
@@ -69,7 +71,8 @@
   });
 }
 
-- (NSData *)scaledImageWithImage:(NSData *)image {
+- (NSData *)scaledImageWithImage:(NSData *)image
+{
   CGImageSourceRef imageData = CGImageSourceCreateWithData((CFDataRef)image, nil);
 
   CGSize size = [FBImageIOScaler imageSizeWithImage:imageData];
@@ -93,7 +96,8 @@
   return jpegData;
 }
 
-- (NSData *)jpegDataWithImage:(CGImageRef)imageRef {
+- (NSData *)jpegDataWithImage:(CGImageRef)imageRef
+{
   NSMutableData *newImageData = [NSMutableData data];
   CGImageDestinationRef imageDestination = CGImageDestinationCreateWithData((CFMutableDataRef)newImageData, kUTTypeJPEG, 1, NULL);
 
@@ -106,7 +110,8 @@
   return newImageData;
 }
 
-+ (CGSize)imageSizeWithImage:(CGImageSourceRef)imageSource{
++ (CGSize)imageSizeWithImage:(CGImageSourceRef)imageSource
+{
   NSDictionary *options = @{
                             (NSString *)kCGImageSourceShouldCache: @(NO)
                             };
