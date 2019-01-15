@@ -60,7 +60,7 @@
     if (next == nil) {
       return;
     }
-    NSData *scaled = [self scaleImage:next];
+    NSData *scaled = [self scaledImageWithImage:next];
     if (scaled == nil) {
       [FBLogger log:@"Could not scale down image"];
       return;
@@ -69,10 +69,10 @@
   });
 }
 
-- (NSData *)scaleImage:(NSData *)image {
+- (NSData *)scaledImageWithImage:(NSData *)image {
   CGImageSourceRef imageData = CGImageSourceCreateWithData((CFDataRef)image, nil);
 
-  CGSize size = [self getImageSize:imageData];
+  CGSize size = [self imageSizeWithImage:imageData];
   CGFloat scaledMaxPixelSize = MAX(size.width, size.height) * self.scalingFactor;
 
   CFDictionaryRef params = (__bridge CFDictionaryRef)@{
@@ -87,13 +87,13 @@
     CFRelease(imageData);
     return nil;
   }
-  NSData *jpegData = [self convertToJpeg:scaled];
+  NSData *jpegData = [self jpegDataWithImage:scaled];
   CFRelease(scaled);
   CFRelease(imageData);
   return jpegData;
 }
 
-- (NSData *)convertToJpeg:(CGImageRef)imageRef {
+- (NSData *)jpegDataWithImage:(CGImageRef)imageRef {
   NSMutableData *newImageData = [NSMutableData data];
   CGImageDestinationRef imageDestination = CGImageDestinationCreateWithData((CFMutableDataRef)newImageData, kUTTypeJPEG, 1, NULL);
 
@@ -106,7 +106,7 @@
   return newImageData;
 }
 
-- (CGSize)getImageSize:(CGImageSourceRef)imageSource {
+- (CGSize)imageSizeWithImage:(CGImageSourceRef)imageSource {
   NSDictionary *options = @{
                             (NSString *)kCGImageSourceShouldCache: @(NO)
                             };
