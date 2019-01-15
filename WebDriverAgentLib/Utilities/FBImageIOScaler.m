@@ -32,6 +32,8 @@
   if (self) {
     _scalingFactor = MAX(1, MIN(100, scalingFactor)) / 100.0f;
 
+    _scalingEnabled = fabs(1.0 - self.scalingFactor) > DBL_EPSILON;
+
     _nextImageLock = [[NSLock alloc] init];
     _scalingQueue = dispatch_queue_create("image.scaling.queue", NULL);
 
@@ -43,7 +45,7 @@
 }
 - (void)submitImage:(NSData *)image completionHandler:(void(^)(NSData *scaled))completionHandler
 {
-  if (fabs(1.0 - self.scalingFactor) < DBL_EPSILON) {
+  if (!self.isScalingEnabled) {
     completionHandler(image);
     return;
   }

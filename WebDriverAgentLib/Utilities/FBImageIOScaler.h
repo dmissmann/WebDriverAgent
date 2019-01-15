@@ -17,6 +17,11 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface FBImageIOScaler : NSObject
 
+/** Can be checked if a scaling operation will be performed on submitting an image
+  * or if the image will be passed unmodified to the completion handler
+ */
+@property(nonatomic, readonly, getter=isScalingEnabled) BOOL scalingEnabled;
+
 /**
  @param scalingFactor the scaling factor (between 1 and 100) to use. A value of 100 won't perform scaling at all
  @param compressionQuality the compression quality of the JPEG output image

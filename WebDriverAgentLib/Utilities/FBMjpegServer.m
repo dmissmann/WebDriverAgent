@@ -109,10 +109,15 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
     [self scheduleNextScreenshotWithInterval:timerInterval timeStarted:timeStarted];
     return;
   }
-  [self.imageScaler submitImage:screenshotData
-              completionHandler:^(NSData * _Nonnull scaled) {
-                [self sendScreenshot:scaled];
-              }];
+  if (self.imageScaler.isScalingEnabled) {
+    [self.imageScaler submitImage:screenshotData
+                completionHandler:^(NSData * _Nonnull scaled) {
+                  [self sendScreenshot:scaled];
+                }];
+  } else {
+    [self sendScreenshot:screenshotData];
+  }
+
   [self scheduleNextScreenshotWithInterval:timerInterval timeStarted:timeStarted];
 }
 
