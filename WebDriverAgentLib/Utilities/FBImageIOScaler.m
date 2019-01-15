@@ -30,7 +30,7 @@
 {
   self = [super init];
   if (self) {
-    _scalingFactor = scalingFactor / 100.0f;
+    _scalingFactor = MAX(1, MIN(100, scalingFactor)) / 100.0f;
 
     _nextImageLock = [[NSLock alloc] init];
     _scalingQueue = dispatch_queue_create("image.scaling.queue", NULL);
