@@ -34,7 +34,6 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
 @property (nonatomic, readonly) NSMutableArray<GCDAsyncSocket *> *activeClients;
 @property (nonatomic, readonly) mach_timebase_info_data_t timebaseInfo;
 @property (nonatomic, readonly) FBImageIOScaler *imageScaler;
-@property (nonatomic) NSUInteger tagCounter;
 
 @end
 
@@ -67,7 +66,6 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
     });
   } else {
     // Try to do our best to keep the FPS at a decent level
-    [FBLogger verboseLogFmt:@"Screenshot overdue by %.2fs", llabs(nextTickDelta) / (double)NSEC_PER_SEC];
     dispatch_async(self.backgroundQueue, ^{
       [self streamScreenshot];
     });
@@ -125,7 +123,7 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
   [chunk appendData:(id)[@"\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
   @synchronized (self.activeClients) {
     for (GCDAsyncSocket *client in self.activeClients) {
-      [client writeData:chunk withTimeout:1.0 tag:self.tagCounter++];
+      [client writeData:chunk withTimeout:-1 tag:0];
     }
   }
 }
