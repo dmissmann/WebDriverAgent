@@ -86,14 +86,15 @@
                                                        };
 
   CGImageRef scaled = CGImageSourceCreateThumbnailAtIndex(imageData, 0, params);
-  if (scaled != nil) {
-    NSData *jpegData = [self convertToJpeg:scaled];
-    CFRelease(scaled);
+  if (scaled == nil) {
+    [FBLogger log:@"Failed to scale image"];
     CFRelease(imageData);
-    return jpegData;
+    return nil;
   }
+  NSData *jpegData = [self convertToJpeg:scaled];
+  CFRelease(scaled);
   CFRelease(imageData);
-  return nil;
+  return jpegData;
 }
 
 - (NSData *)convertToJpeg:(CGImageRef)imageRef {
