@@ -76,7 +76,7 @@ static NSUInteger DefaultMjpegCompressionFactor = 30;
   return DefaultMjpegServerPort;
 }
 
-+ (NSInteger)mjpegScalingFactor
++ (NSUInteger)mjpegScalingFactor
 {
   if (NSProcessInfo.processInfo.environment[@"MJPEG_SCALING_FACTOR"] &&
       [NSProcessInfo.processInfo.environment[@"MJPEG_SCALING_FACTOR"] length] > 0) {
