@@ -19,7 +19,7 @@
 #import "XCTestManager_ManagerInterface-Protocol.h"
 #import "FBXCTestDaemonsProxy.h"
 #import "XCUIScreen.h"
-#import "FBCIImageScaler.h"
+#import "FBImageIOScaler.h"
 
 static const NSTimeInterval SCREENSHOT_TIMEOUT = 0.5;
 static const NSUInteger MAX_FPS = 60;
@@ -33,7 +33,7 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
 @property (nonatomic, readonly) dispatch_queue_t backgroundQueue;
 @property (nonatomic, readonly) NSMutableArray<GCDAsyncSocket *> *activeClients;
 @property (nonatomic, readonly) mach_timebase_info_data_t timebaseInfo;
-@property (nonatomic, readonly) FBCIImageScaler *imageScaler;
+@property (nonatomic, readonly) FBImageIOScaler *imageScaler;
 @property (nonatomic) NSUInteger tagCounter;
 
 @end
@@ -51,7 +51,7 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
     dispatch_async(_backgroundQueue, ^{
       [self streamScreenshot];
     });
-    _imageScaler = [[FBCIImageScaler alloc] initWithScalingFactor:[FBConfiguration mjpegScalingFactor]
+    _imageScaler = [[FBImageIOScaler alloc] initWithScalingFactor:[FBConfiguration mjpegScalingFactor]
                                                compressionQuality:[FBConfiguration mjpegCompressionFactor]];
   }
   return self;
