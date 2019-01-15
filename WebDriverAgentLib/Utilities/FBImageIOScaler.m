@@ -72,7 +72,7 @@
 - (NSData *)scaledImageWithImage:(NSData *)image {
   CGImageSourceRef imageData = CGImageSourceCreateWithData((CFDataRef)image, nil);
 
-  CGSize size = [self imageSizeWithImage:imageData];
+  CGSize size = [FBImageIOScaler imageSizeWithImage:imageData];
   CGFloat scaledMaxPixelSize = MAX(size.width, size.height) * self.scalingFactor;
 
   CFDictionaryRef params = (__bridge CFDictionaryRef)@{
@@ -106,7 +106,7 @@
   return newImageData;
 }
 
-- (CGSize)imageSizeWithImage:(CGImageSourceRef)imageSource {
++ (CGSize)imageSizeWithImage:(CGImageSourceRef)imageSource{
   NSDictionary *options = @{
                             (NSString *)kCGImageSourceShouldCache: @(NO)
                             };
