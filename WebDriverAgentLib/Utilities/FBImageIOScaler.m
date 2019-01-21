@@ -88,7 +88,7 @@
 
   CGImageRef scaled = CGImageSourceCreateThumbnailAtIndex(imageData, 0, params);
   if (scaled == nil) {
-    [FBLogger log:@"Failed to scale image"];
+    [FBLogger log:@"Failed to scale the image"];
     CFRelease(imageData);
     return nil;
   }
@@ -105,7 +105,7 @@
 
   CGImageDestinationAddImage(imageDestination, imageRef, self.compressionOptions);
   if(!CGImageDestinationFinalize(imageDestination)) {
-    [FBLogger log:@"Failed to write image"];
+    [FBLogger log:@"Failed to write the image"];
     newImageData = nil;
   }
   CFRelease(imageDestination);
