@@ -97,10 +97,14 @@ NS_ASSUME_NONNULL_BEGIN
  */
 + (NSUInteger)mjpegScalingFactor;
 
++ (void)setMjpegScalingFactor:(NSUInteger)scalingFactor;
+
 /**
  JPEG compression rate for mjpeg frames (Default value is 30)
  */
 + (NSInteger)mjpegCompressionFactor;
+
++ (void)setMjpegCompressionFactor:(NSUInteger)compressionFactor;
 
 /**
  YES if verbose logging is enabled. NO otherwise.

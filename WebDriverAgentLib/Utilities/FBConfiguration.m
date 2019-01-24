@@ -29,8 +29,8 @@ static NSUInteger FBMaxTypingFrequency = 60;
 static NSUInteger FBMjpegServerScreenshotQuality = 25;
 static NSUInteger FBMjpegServerFramerate = 10;
 static NSUInteger FBScreenshotQuality = 1;
-static NSUInteger DefaultMjpegScalingFactor = 100;
-static NSUInteger DefaultMjpegCompressionFactor = 30;
+static NSUInteger FBMjpegScalingFactor = 100;
+static NSUInteger FBMjpegCompressionFactor = 30;
 
 @implementation FBConfiguration
 
@@ -78,22 +78,20 @@ static NSUInteger DefaultMjpegCompressionFactor = 30;
 
 + (NSUInteger)mjpegScalingFactor
 {
-  if (NSProcessInfo.processInfo.environment[@"MJPEG_SCALING_FACTOR"] &&
-      [NSProcessInfo.processInfo.environment[@"MJPEG_SCALING_FACTOR"] length] > 0) {
-    return [NSProcessInfo.processInfo.environment[@"MJPEG_SCALING_FACTOR"] integerValue];
-  }
+  return FBMjpegScalingFactor;
+}
 
-  return DefaultMjpegScalingFactor;
++ (void)setMjpegScalingFactor:(NSUInteger)scalingFactor {
+  FBMjpegScalingFactor = scalingFactor;
 }
 
 + (NSInteger)mjpegCompressionFactor
 {
-  if (NSProcessInfo.processInfo.environment[@"MJPEG_COMPRESSION_FACTOR"] &&
-      [NSProcessInfo.processInfo.environment[@"MJPEG_COMPRESSION_FACTOR"] length] > 0) {
-    return [NSProcessInfo.processInfo.environment[@"MJPEG_COMPRESSION_FACTOR"] integerValue];
-  }
+  return FBMjpegCompressionFactor;
+}
 
-  return DefaultMjpegCompressionFactor;
++ (void)setMjpegCompressionFactor:(NSUInteger)compressionFactor {
+  FBMjpegCompressionFactor = compressionFactor;
 }
 
 + (BOOL)verboseLoggingEnabled
