@@ -54,7 +54,7 @@
                                   scalingFactor:scalingFactor
                               compressionQuality:compressionQuality];
     if (scaled == nil) {
-      [FBLogger log:@"Could not scale down image"];
+      [FBLogger log:@"Could not scale down the image"];
       return;
     }
     completionHandler(scaled);
