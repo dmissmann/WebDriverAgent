@@ -8,6 +8,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <CoreGraphics/CoreGraphics.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -17,24 +18,15 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @interface FBImageIOScaler : NSObject
 
-/** Can be checked if a scaling operation will be performed on submitting an image
-  * or if the image will be passed unmodified to the completion handler
- */
-@property(nonatomic, readonly, getter=isScalingEnabled) BOOL scalingEnabled;
-
-/**
- @param scalingFactor the scaling factor (between 1 and 100) to use. A value of 100 won't perform scaling at all
- @param compressionQuality the compression quality of the JPEG output image
- */
-- (id)initWithScalingFactor:(NSUInteger)scalingFactor compressionQuality:(NSUInteger)compressionQuality;
-
 /**
  Puts the passed image on the queue and dispatches a scaling operation. If there is already a image on the
  queue it will be replaced with the new one
  @param image The image to scale down
  @param completionHandler called after successfully scaling down an image
+ @param scalingFactor the scaling factor (between 0.01 and 1.0) to use. A value of 1.0 won't perform scaling at all
+ @param compressionQuality the compression quality (between 0.01 and 1.0) of the JPEG output image
  */
-- (void)submitImage:(NSData *)image completionHandler:(void(^)(NSData *scaled))completionHandler;
+- (void)submitImage:(NSData *)image scalingFactor:(CGFloat)scalingFactor compressionQuality:(CGFloat)compressionQuality completionHandler:(void (^)(NSData *))completionHandler;
 
 @end
 

@@ -115,7 +115,7 @@ static NSString *const FBServerURLEndMarker = @"<-ServerURLHere";
 
 - (void)initScreenshotsBroadcaster
 {
-  [self readEnvironmentSettings];
+  [self readMjpegSettingsFromEnv];
   self.screenshotsBroadcaster = [[FBTCPSocket alloc]
                                  initWithPort:(uint16_t)FBConfiguration.mjpegServerPort];
   self.screenshotsBroadcaster.delegate = [[FBMjpegServer alloc] init];
@@ -133,6 +133,19 @@ static NSString *const FBServerURLEndMarker = @"<-ServerURLHere";
   }
 
   [self.screenshotsBroadcaster stop];
+}
+
+- (void)readMjpegSettingsFromEnv
+{
+  NSDictionary *env = NSProcessInfo.processInfo.environment;
+  NSString *scalingFactor = [env objectForKey:@"MJPEG_SCALING_FACTOR"];
+  if (scalingFactor != nil) {
+    [FBConfiguration setMjpegScalingFactor:[scalingFactor integerValue]];
+  }
+  NSString *compressionFactor = [env objectForKey:@"MJPEG_COMPRESSION_FACTOR"];
+  if (compressionFactor != nil) {
+    [FBConfiguration setMjpegCompressionFactor:[compressionFactor integerValue]];
+  }
 }
 
 - (void)stopServing
@@ -215,18 +228,6 @@ static NSString *const FBServerURLEndMarker = @"<-ServerURLHere";
   }];
 
   [self registerRouteHandlers:@[FBUnknownCommands.class]];
-}
-
-- (void)readEnvironmentSettings {
-  NSDictionary *env = NSProcessInfo.processInfo.environment;
-  NSString *scalingFactor = [env objectForKey:@"MJPEG_SCALING_FACTOR"];
-  if (scalingFactor != nil) {
-    [FBConfiguration setMjpegScalingFactor:[scalingFactor integerValue]];
-  }
-  NSString *compressionFactor = [env objectForKey:@"MJPEG_COMPRESSION_FACTOR"];
-  if (compressionFactor != nil) {
-    [FBConfiguration setMjpegCompressionFactor:[compressionFactor integerValue]];
-  }
 }
 
 @end

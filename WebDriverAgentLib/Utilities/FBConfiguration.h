@@ -96,14 +96,12 @@ NS_ASSUME_NONNULL_BEGIN
  The scaling factor for frames of the mjpeg stream (Default values is 100 and does not perform scaling).
  */
 + (NSUInteger)mjpegScalingFactor;
-
 + (void)setMjpegScalingFactor:(NSUInteger)scalingFactor;
 
 /**
  JPEG compression rate for mjpeg frames (Default value is 30)
  */
 + (NSInteger)mjpegCompressionFactor;
-
 + (void)setMjpegCompressionFactor:(NSUInteger)compressionFactor;
 
 /**

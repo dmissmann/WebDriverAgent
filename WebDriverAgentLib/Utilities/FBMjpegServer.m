@@ -50,8 +50,7 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
     dispatch_async(_backgroundQueue, ^{
       [self streamScreenshot];
     });
-    _imageScaler = [[FBImageIOScaler alloc] initWithScalingFactor:[FBConfiguration mjpegScalingFactor]
-                                               compressionQuality:[FBConfiguration mjpegCompressionFactor]];
+    _imageScaler = [[FBImageIOScaler alloc] init];
   }
   return self;
 }
@@ -109,8 +108,11 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
     [self scheduleNextScreenshotWithInterval:timerInterval timeStarted:timeStarted];
     return;
   }
-  if (self.imageScaler.isScalingEnabled) {
+  CGFloat scalingFactor = [FBConfiguration mjpegScalingFactor]/100.0;
+  if (fabs(1.0 - scalingFactor) > DBL_EPSILON) {
     [self.imageScaler submitImage:screenshotData
+                    scalingFactor:[FBConfiguration mjpegScalingFactor]/100.0
+               compressionQuality:[FBConfiguration mjpegCompressionFactor]/100.0
                 completionHandler:^(NSData * _Nonnull scaled) {
                   [self sendScreenshot:scaled];
                 }];

@@ -28,30 +28,31 @@
 }
 
 - (void)testExample {
-  NSUInteger halfScale = 50;
-  CGSize expectedHalfScaleSize = [FBImageIOScalerTests sizeFromSize:self.originalSize withScalingFactor:50];
+  CGFloat halfScale = 0.5;
+  CGSize expectedHalfScaleSize = [FBImageIOScalerTests sizeFromSize:self.originalSize withScalingFactor:0.5];
   [self scaleImageWithFactor:halfScale
                 expectedSize:expectedHalfScaleSize];
 
   // 1 is the smalles scaling factor we accept
-  NSUInteger minScale = 0;
-  CGSize expectedMinScaleSize = [FBImageIOScalerTests sizeFromSize:self.originalSize withScalingFactor:1];
+  CGFloat minScale = 0.0;
+  CGSize expectedMinScaleSize = [FBImageIOScalerTests sizeFromSize:self.originalSize withScalingFactor:0.01];
   [self scaleImageWithFactor:minScale
                 expectedSize:expectedMinScaleSize];
 
   // For scaling factors above 100 we don't perform any scaling and just return the unmodified image
-  NSUInteger unscaled = 200;
+  CGFloat unscaled = 2.0;
   [self scaleImageWithFactor:unscaled
                 expectedSize:self.originalSize];
 }
 
-- (void)scaleImageWithFactor:(NSUInteger)scalingFactor expectedSize:(CGSize)excpectedSize {
-  FBImageIOScaler *scaler = [[FBImageIOScaler alloc] initWithScalingFactor:scalingFactor
-                                                        compressionQuality:100];
+- (void)scaleImageWithFactor:(CGFloat)scalingFactor expectedSize:(CGSize)excpectedSize {
+  FBImageIOScaler *scaler = [[FBImageIOScaler alloc] init];
 
   id expScaled = [self expectationWithDescription:@"Receive scaled image"];
 
   [scaler submitImage:self.originalImage
+        scalingFactor:scalingFactor
+   compressionQuality:1.0
     completionHandler:^(NSData *scaled) {
       UIImage *scaledImage = [UIImage imageWithData:scaled];
       CGSize scaledSize = [FBImageIOScalerTests scaledSizeFromImage:scaledImage];
@@ -71,8 +72,8 @@
   return CGSizeMake(image.size.width * image.scale, image.size.height * image.scale);
 }
 
-+ (CGSize)sizeFromSize:(CGSize)size withScalingFactor:(NSUInteger)scalingFactor {
-  return CGSizeMake(round(size.width * (scalingFactor / 100.0)), round(size.height * (scalingFactor / 100.0)));
++ (CGSize)sizeFromSize:(CGSize)size withScalingFactor:(CGFloat)scalingFactor {
+  return CGSizeMake(round(size.width * scalingFactor), round(size.height * scalingFactor));
 }
 
 @end
