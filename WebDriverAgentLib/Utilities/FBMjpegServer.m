@@ -108,11 +108,11 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
     [self scheduleNextScreenshotWithInterval:timerInterval timeStarted:timeStarted];
     return;
   }
-  CGFloat scalingFactor = [FBConfiguration mjpegScalingFactor]/100.0;
+  CGFloat scalingFactor = [FBConfiguration mjpegScalingFactor] / 100.0f;
   if (fabs(1.0 - scalingFactor) > DBL_EPSILON) {
     [self.imageScaler submitImage:screenshotData
-                    scalingFactor:[FBConfiguration mjpegScalingFactor]/100.0
-               compressionQuality:[FBConfiguration mjpegCompressionFactor]/100.0
+                    scalingFactor:scalingFactor
+               compressionQuality:[FBConfiguration mjpegCompressionFactor] / 100.0f
                 completionHandler:^(NSData * _Nonnull scaled) {
                   [self sendScreenshot:scaled];
                 }];
