@@ -139,11 +139,11 @@ static NSString *const FBServerURLEndMarker = @"<-ServerURLHere";
 {
   NSDictionary *env = NSProcessInfo.processInfo.environment;
   NSString *scalingFactor = [env objectForKey:@"MJPEG_SCALING_FACTOR"];
-  if (scalingFactor != nil) {
+  if (scalingFactor != nil && [scalingFactor length] > 0) {
     [FBConfiguration setMjpegScalingFactor:[scalingFactor integerValue]];
   }
   NSString *compressionFactor = [env objectForKey:@"MJPEG_COMPRESSION_FACTOR"];
-  if (compressionFactor != nil) {
+  if (compressionFactor != nil && [compressionFactor length] > 0) {
     [FBConfiguration setMjpegCompressionFactor:[compressionFactor integerValue]];
   }
 }
