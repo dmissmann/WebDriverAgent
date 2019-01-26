@@ -66,7 +66,7 @@ static const CGFloat FBMaxCompressionQuality = 1.0f;
   });
 }
 
-- (NSData *)scaledImageWithImage:(NSData *)image scalingFactor:(CGFloat)scalingFactor compressionQuality:(CGFloat)compressionQuality {
+- (nullable NSData *)scaledImageWithImage:(NSData *)image scalingFactor:(CGFloat)scalingFactor compressionQuality:(CGFloat)compressionQuality {
   CGImageSourceRef imageData = CGImageSourceCreateWithData((CFDataRef)image, nil);
 
   CGSize size = [FBImageIOScaler imageSizeWithImage:imageData];
@@ -91,7 +91,7 @@ static const CGFloat FBMaxCompressionQuality = 1.0f;
   return jpegData;
 }
 
-- (NSData *)jpegDataWithImage:(CGImageRef)imageRef compressionQuality:(CGFloat)compressionQuality
+- (nullable NSData *)jpegDataWithImage:(CGImageRef)imageRef compressionQuality:(CGFloat)compressionQuality
 {
   NSMutableData *newImageData = [NSMutableData data];
   CGImageDestinationRef imageDestination = CGImageDestinationCreateWithData((CFMutableDataRef)newImageData, kUTTypeJPEG, 1, NULL);
