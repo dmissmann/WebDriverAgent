@@ -23,8 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
  queue it will be replaced with the new one
  @param image The image to scale down
  @param completionHandler called after successfully scaling down an image
- @param scalingFactor the scaling factor (between 0.01 and 1.0) to use. A value of 1.0 won't perform scaling at all
- @param compressionQuality the compression quality (between 0.01 and 1.0) of the JPEG output image
+ @param scalingFactor the scaling factor in range 0.01..1.0. A value of 1.0 won't perform scaling at all
+ @param compressionQuality the compression quality in range 0.0..1.0 (0.0 for max. compression and 1.0 for lossless compression)
  */
 - (void)submitImage:(NSData *)image scalingFactor:(CGFloat)scalingFactor compressionQuality:(CGFloat)compressionQuality completionHandler:(void (^)(NSData *))completionHandler;
 

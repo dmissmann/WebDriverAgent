@@ -12,6 +12,11 @@
 #import <CoreServices/CoreServices.h>
 #import "FBLogger.h"
 
+static const CGFloat FBMinScalingFactor = 0.01f;
+static const CGFloat FBMaxScalingFactor = 1.0f;
+static const CGFloat FBMinCompressionQuality = 0.0f;
+static const CGFloat FBMaxCompressionQuality = 1.0f;
+
 @interface FBImageIOScaler ()
 
 @property (nonatomic) NSData *nextImage;
@@ -37,8 +42,8 @@
   if (self.nextImage != nil) {
     [FBLogger verboseLog:@"Discarding screenshot"];
   }
-  scalingFactor = MAX(0.01, MIN(1.0, scalingFactor));
-  compressionQuality = MAX(0.01, MIN(1.0, compressionQuality));
+  scalingFactor = MAX(FBMinScalingFactor, MIN(FBMaxScalingFactor, scalingFactor));
+  compressionQuality = MAX(FBMinCompressionQuality, MIN(FBMaxCompressionQuality, compressionQuality));
   self.nextImage = image;
   [self.nextImageLock unlock];
 
