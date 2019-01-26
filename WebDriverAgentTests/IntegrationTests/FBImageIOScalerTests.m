@@ -9,8 +9,9 @@
 
 #import <XCTest/XCTest.h>
 #import "FBImageIOScaler.h"
+#import "FBIntegrationTestCase.h"
 
-@interface FBImageIOScalerTests : XCTestCase
+@interface FBImageIOScalerTests : FBIntegrationTestCase
 
 @property (nonatomic) NSData *originalImage;
 @property (nonatomic) CGSize originalSize;
