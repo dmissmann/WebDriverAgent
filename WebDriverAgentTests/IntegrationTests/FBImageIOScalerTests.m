@@ -28,7 +28,7 @@
   self.originalSize = [FBImageIOScalerTests scaledSizeFromImage:screenshot.image];
 }
 
-- (void)testExample {
+- (void)testScaling {
   CGFloat halfScale = 0.5;
   CGSize expectedHalfScaleSize = [FBImageIOScalerTests sizeFromSize:self.originalSize withScalingFactor:0.5];
   [self scaleImageWithFactor:halfScale
