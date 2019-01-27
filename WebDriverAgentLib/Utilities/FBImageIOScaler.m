@@ -9,7 +9,7 @@
 
 #import "FBImageIOScaler.h"
 #import <ImageIO/ImageIO.h>
-#import <CoreServices/CoreServices.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 #import "FBLogger.h"
 
 static const CGFloat FBMinScalingFactor = 0.01f;
@@ -73,9 +73,9 @@ static const CGFloat FBMaxCompressionQuality = 1.0f;
   CGFloat scaledMaxPixelSize = MAX(size.width, size.height) * scalingFactor;
 
   CFDictionaryRef params = (__bridge CFDictionaryRef)@{
-                                                       (id)kCGImageSourceCreateThumbnailWithTransform: @(YES),
-                                                       (id)kCGImageSourceCreateThumbnailFromImageIfAbsent: @(YES),
-                                                       (id)kCGImageSourceThumbnailMaxPixelSize: @(scaledMaxPixelSize)
+                                                       (const NSString *)kCGImageSourceCreateThumbnailWithTransform: @(YES),
+                                                       (const NSString *)kCGImageSourceCreateThumbnailFromImageIfAbsent: @(YES),
+                                                       (const NSString *)kCGImageSourceThumbnailMaxPixelSize: @(scaledMaxPixelSize)
                                                        };
 
   CGImageRef scaled = CGImageSourceCreateThumbnailAtIndex(imageData, 0, params);
@@ -97,7 +97,7 @@ static const CGFloat FBMaxCompressionQuality = 1.0f;
   CGImageDestinationRef imageDestination = CGImageDestinationCreateWithData((CFMutableDataRef)newImageData, kUTTypeJPEG, 1, NULL);
 
   CFDictionaryRef compressionOptions = (__bridge CFDictionaryRef)@{
-                                                    (id)kCGImageDestinationLossyCompressionQuality: @(compressionQuality)
+                                                    (const NSString *)kCGImageDestinationLossyCompressionQuality: @(compressionQuality)
                                                     };
 
   CGImageDestinationAddImage(imageDestination, imageRef, compressionOptions);
@@ -112,12 +112,12 @@ static const CGFloat FBMaxCompressionQuality = 1.0f;
 + (CGSize)imageSizeWithImage:(CGImageSourceRef)imageSource
 {
   NSDictionary *options = @{
-                            (NSString *)kCGImageSourceShouldCache: @(NO)
+                            (const NSString *)kCGImageSourceShouldCache: @(NO)
                             };
   CFDictionaryRef properties = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, (CFDictionaryRef)options);
 
-  NSNumber *width = [(__bridge NSDictionary *)properties objectForKey:(id)kCGImagePropertyPixelWidth];
-  NSNumber *height = [(__bridge NSDictionary *)properties objectForKey:(id)kCGImagePropertyPixelHeight];
+  NSNumber *width = [(__bridge NSDictionary *)properties objectForKey:(const NSString *)kCGImagePropertyPixelWidth];
+  NSNumber *height = [(__bridge NSDictionary *)properties objectForKey:(const NSString *)kCGImagePropertyPixelHeight];
 
   CGSize size = CGSizeMake([width floatValue], [height floatValue]);
   CFRelease(properties);
