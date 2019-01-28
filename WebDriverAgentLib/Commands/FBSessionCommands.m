@@ -207,7 +207,6 @@ static NSString* const SCREENSHOT_QUALITY = @"screenshotQuality";
       MJPEG_SERVER_SCREENSHOT_QUALITY: @([FBConfiguration mjpegServerScreenshotQuality]),
       MJPEG_SERVER_FRAMERATE: @([FBConfiguration mjpegServerFramerate]),
       MJPEG_SCALING_FACTOR: @([FBConfiguration mjpegScalingFactor]),
-      MJPEG_COMPRESSION_FACTOR: @([FBConfiguration mjpegCompressionFactor]),
       SCREENSHOT_QUALITY: @([FBConfiguration screenshotQuality]),
     }
   );
@@ -236,9 +235,6 @@ static NSString* const SCREENSHOT_QUALITY = @"screenshotQuality";
   }
   if ([settings objectForKey:MJPEG_SCALING_FACTOR]) {
     [FBConfiguration setMjpegScalingFactor:[[settings objectForKey:MJPEG_SCALING_FACTOR] unsignedIntegerValue]];
-  }
-  if ([settings objectForKey:MJPEG_COMPRESSION_FACTOR]) {
-    [FBConfiguration setMjpegCompressionFactor:[[settings objectForKey:MJPEG_COMPRESSION_FACTOR] unsignedIntegerValue]];
   }
 
   return [self handleGetSettings:request];

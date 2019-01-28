@@ -142,9 +142,9 @@ static NSString *const FBServerURLEndMarker = @"<-ServerURLHere";
   if (scalingFactor != nil && [scalingFactor length] > 0) {
     [FBConfiguration setMjpegScalingFactor:[scalingFactor integerValue]];
   }
-  NSString *compressionFactor = [env objectForKey:@"MJPEG_COMPRESSION_FACTOR"];
-  if (compressionFactor != nil && [compressionFactor length] > 0) {
-    [FBConfiguration setMjpegCompressionFactor:[compressionFactor integerValue]];
+  NSString *screenshotQuality = [env objectForKey:@"MJPEG_SERVER_SCREENSHOT_QUALITY"];
+  if (screenshotQuality != nil && [screenshotQuality length] > 0) {
+    [FBConfiguration setMjpegServerScreenshotQuality:[screenshotQuality integerValue]];
   }
 }
 

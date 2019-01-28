@@ -30,7 +30,6 @@ static NSUInteger FBMjpegServerScreenshotQuality = 25;
 static NSUInteger FBMjpegServerFramerate = 10;
 static NSUInteger FBScreenshotQuality = 1;
 static NSUInteger FBMjpegScalingFactor = 100;
-static NSUInteger FBMjpegCompressionFactor = 30;
 
 @implementation FBConfiguration
 
@@ -83,15 +82,6 @@ static NSUInteger FBMjpegCompressionFactor = 30;
 
 + (void)setMjpegScalingFactor:(NSUInteger)scalingFactor {
   FBMjpegScalingFactor = scalingFactor;
-}
-
-+ (NSInteger)mjpegCompressionFactor
-{
-  return FBMjpegCompressionFactor;
-}
-
-+ (void)setMjpegCompressionFactor:(NSUInteger)compressionFactor {
-  FBMjpegCompressionFactor = compressionFactor;
 }
 
 + (BOOL)verboseLoggingEnabled

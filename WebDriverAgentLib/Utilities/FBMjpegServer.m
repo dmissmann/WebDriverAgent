@@ -112,7 +112,7 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
   if (fabs(1.0 - scalingFactor) > DBL_EPSILON) {
     [self.imageScaler submitImage:screenshotData
                     scalingFactor:scalingFactor
-               compressionQuality:[FBConfiguration mjpegCompressionFactor] / 100.0f
+               compressionQuality:compressionQuality
                 completionHandler:^(NSData * _Nonnull scaled) {
                   [self sendScreenshot:scaled];
                 }];
