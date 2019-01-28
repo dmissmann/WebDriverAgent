@@ -30,13 +30,13 @@
 
 - (void)testScaling {
   CGFloat halfScale = 0.5;
-  CGSize expectedHalfScaleSize = [FBImageIOScalerTests sizeFromSize:self.originalSize withScalingFactor:0.5];
+  CGSize expectedHalfScaleSize = [FBImageIOScalerTests sizeFromSize:self.originalSize scalingFactor:0.5];
   [self scaleImageWithFactor:halfScale
                 expectedSize:expectedHalfScaleSize];
 
   // 1 is the smalles scaling factor we accept
   CGFloat minScale = 0.0;
-  CGSize expectedMinScaleSize = [FBImageIOScalerTests sizeFromSize:self.originalSize withScalingFactor:0.01];
+  CGSize expectedMinScaleSize = [FBImageIOScalerTests sizeFromSize:self.originalSize scalingFactor:0.01];
   [self scaleImageWithFactor:minScale
                 expectedSize:expectedMinScaleSize];
 
@@ -73,7 +73,7 @@
   return CGSizeMake(image.size.width * image.scale, image.size.height * image.scale);
 }
 
-+ (CGSize)sizeFromSize:(CGSize)size withScalingFactor:(CGFloat)scalingFactor {
++ (CGSize)sizeFromSize:(CGSize)size scalingFactor:(CGFloat)scalingFactor {
   return CGSizeMake(round(size.width * scalingFactor), round(size.height * scalingFactor));
 }
 
