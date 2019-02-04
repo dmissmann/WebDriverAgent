@@ -86,7 +86,7 @@ static const CGFloat FBMaxCompressionQuality = 1.0f;
   }
   NSData *jpegData = [self jpegDataWithImage:scaled
                            compressionQuality:compressionQuality];
-  CFRelease(scaled);
+  CGImageRelease(scaled);
   CFRelease(imageData);
   return jpegData;
 }
