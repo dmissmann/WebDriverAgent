@@ -12,6 +12,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+// Those values define the allowed ranges for the scaling factor and compression quality settings
+extern const CGFloat FBMinScalingFactor;
+extern const CGFloat FBMaxScalingFactor;
+extern const CGFloat FBMinCompressionQuality;
+extern const CGFloat FBMaxCompressionQuality;
+
+
 /**
  Scales images and compresses it to JPEG using Image I/O
  It allows to enqueue only a single screenshot. If a new one arrives before the currently queued gets discared

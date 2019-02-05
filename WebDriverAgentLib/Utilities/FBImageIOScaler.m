@@ -12,10 +12,10 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "FBLogger.h"
 
-static const CGFloat FBMinScalingFactor = 0.01f;
-static const CGFloat FBMaxScalingFactor = 1.0f;
-static const CGFloat FBMinCompressionQuality = 0.0f;
-static const CGFloat FBMaxCompressionQuality = 1.0f;
+const CGFloat FBMinScalingFactor = 0.01f;
+const CGFloat FBMaxScalingFactor = 1.0f;
+const CGFloat FBMinCompressionQuality = 0.0f;
+const CGFloat FBMaxCompressionQuality = 1.0f;
 
 @interface FBImageIOScaler ()
 

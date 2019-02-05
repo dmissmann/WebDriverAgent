@@ -91,14 +91,14 @@ static const char *QUEUE_NAME = "JPEG Screenshots Provider Queue";
   __block NSData *screenshotData = nil;
 
   CGFloat scalingFactor = [FBConfiguration mjpegScalingFactor] / 100.0f;
-  BOOL usesScaling = fabs(1.0 - scalingFactor) > DBL_EPSILON;
+  BOOL usesScaling = fabs(FBMaxScalingFactor - scalingFactor) > DBL_EPSILON;
 
   CGFloat compressionQuality = FBConfiguration.mjpegServerScreenshotQuality / 100.0f;
 
   // If scaling is applied we perform another JPEG compression after scaling
   // To get the desired compressionQuality we need to do a lossless compression here
   if (usesScaling) {
-    compressionQuality = 1.0;
+    compressionQuality = FBMaxScalingFactor;
   }
   id<XCTestManager_ManagerInterface> proxy = [FBXCTestDaemonsProxy testRunnerProxy];
   dispatch_semaphore_t sem = dispatch_semaphore_create(0);
