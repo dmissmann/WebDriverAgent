@@ -44,13 +44,13 @@ static NSUInteger delay = 0;
     [FBLogger log:@"Could not find method -[XCUIApplicationProcess setEventLoopHasIdled:]"];
     return;
   }
-  [FBLogger verboseLog:[NSString stringWithFormat:@"Delay -[XCUIApplicationProcess setEventLoopHasIdled:] by %lu seconds", (unsigned long)delay]];
   orig_set_event_loop_has_idled = (void(*)(id, SEL, BOOL)) method_getImplementation(original);
   Method replace = class_getClassMethod([XCUIApplicationProcessDelay class], @selector(setEventLoopHasIdled:));
   method_setImplementation(original, method_getImplementation(replace));
 }
 
 + (void)setEventLoopHasIdled:(BOOL)idled {
+  [FBLogger verboseLog:[NSString stringWithFormat:@"Delay -[XCUIApplicationProcess setEventLoopHasIdled:] by %lu seconds", (unsigned long)delay]];
   [NSThread sleepForTimeInterval:delay];
   orig_set_event_loop_has_idled(self, _cmd, idled);
 }
