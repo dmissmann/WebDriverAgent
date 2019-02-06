@@ -19,27 +19,27 @@
  '-[XCUIApplicationProcess setAnimationsHaveFinished:]', which are the properties that are checked to
  determine whether an app has quiescenced or not.
  Delaying the call to on of the setters can fix this issue. Setting the environment variable
- 'DELAY_SET_EVENTLOOP_IDLE_S' will swizzle the method '-[XCUIApplicationProcess setEventLoopHasIdled:]'
+ 'EVENTLOOP_IDLE_DELAY_SEC' will swizzle the method '-[XCUIApplicationProcess setEventLoopHasIdled:]'
  and add a thread sleep of the value specified in the environment variable in seconds.
  */
 @interface XCUIApplicationProcessDelay : NSObject
 
 @end
 
-static NSString *const DELAY_SET_EVENTLOOP_IDLE_S = @"DELAY_SET_EVENTLOOP_IDLE_S";
+static NSString *const EVENTLOOP_IDLE_DELAY_SEC = @"EVENTLOOP_IDLE_DELAY_SEC";
 static void (*orig_set_event_loop_has_idled)(id, SEL, BOOL);
-static NSUInteger delay = 0;
+static NSTimeInterval delay = 0;
 
 @implementation XCUIApplicationProcessDelay
 
 + (void)load {
   NSDictionary *env = [[NSProcessInfo processInfo] environment];
-  NSString *setEventLoopIdleDelay = [env objectForKey:DELAY_SET_EVENTLOOP_IDLE_S];
+  NSString *setEventLoopIdleDelay = [env objectForKey:EVENTLOOP_IDLE_DELAY_SEC];
   if (!setEventLoopIdleDelay || [setEventLoopIdleDelay length] == 0) {
     [FBLogger verboseLog:@"don't delay -[XCUIApplicationProcess setEventLoopHasIdled:]"];
     return;
   }
-  delay = [setEventLoopIdleDelay integerValue];
+  delay = [setEventLoopIdleDelay doubleValue];
   Method original = class_getInstanceMethod([XCUIApplicationProcess class], @selector(setEventLoopHasIdled:));
   if (original == nil) {
     [FBLogger log:@"Could not find method -[XCUIApplicationProcess setEventLoopHasIdled:]"];
@@ -51,7 +51,7 @@ static NSUInteger delay = 0;
 }
 
 + (void)setEventLoopHasIdled:(BOOL)idled {
-  [FBLogger verboseLog:[NSString stringWithFormat:@"Delay -[XCUIApplicationProcess setEventLoopHasIdled:] by %lu seconds", (unsigned long)delay]];
+  [FBLogger verboseLog:[NSString stringWithFormat:@"Delaying -[XCUIApplicationProcess setEventLoopHasIdled:] by %.2f seconds", delay]];
   [NSThread sleepForTimeInterval:delay];
   orig_set_event_loop_has_idled(self, _cmd, idled);
 }
