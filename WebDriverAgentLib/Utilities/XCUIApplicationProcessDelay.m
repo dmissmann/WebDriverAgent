@@ -11,12 +11,23 @@
 #import "XCUIApplicationProcess.h"
 #import "FBLogger.h"
 
-static void (*orig_set_event_loop_has_idled)(id, SEL, BOOL);
-static NSUInteger delay = 0;
-
+/**
+ In certain cases WebDriverAgent fails to create a session because it waits for an app to quiescence,
+ but they don't always do.
+ The reason for this seems to be that 'testmanagerd' doesn't send the events WebDriverAgent is waiting for.
+ The expected events would trigger calls to '-[XCUIApplicationProcess setEventLoopHasIdled:]' and
+ '-[XCUIApplicationProcess setAnimationsHaveFinished:]', which are the properties that are checked to
+ determine whether an app has quiescenced or not.
+ Delaying the call to on of the setters can fix this issue. Setting the environment variable
+ 'DELAY_SET_EVENTLOOP_IDLE' will swizzle the method '-[XCUIApplicationProcess setEventLoopHasIdled:]'
+ and add a thread sleep of the value specified in the environment variable in seconds.
+ */
 @interface XCUIApplicationProcessDelay : NSObject
 
 @end
+
+static void (*orig_set_event_loop_has_idled)(id, SEL, BOOL);
+static NSUInteger delay = 0;
 
 @implementation XCUIApplicationProcessDelay
 
