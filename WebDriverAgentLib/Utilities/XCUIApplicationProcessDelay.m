@@ -12,7 +12,7 @@
 #import "FBLogger.h"
 
 static void (*orig_set_event_loop_has_idled)(id, SEL, BOOL);
-static unsigned int delay = 0;
+static NSUInteger delay = 0;
 
 @interface XCUIApplicationProcessDelay : NSObject
 
@@ -27,20 +27,20 @@ static unsigned int delay = 0;
     [FBLogger verboseLog:@"don't delay -[XCUIApplicationProcess setEventLoopHasIdled:]"];
     return;
   }
-  delay = [setEventLoopIdleDelay intValue];
+  delay = [setEventLoopIdleDelay integerValue];
   Method original = class_getInstanceMethod([XCUIApplicationProcess class], @selector(setEventLoopHasIdled:));
   if (original == nil) {
     [FBLogger log:@"Could not find method -[XCUIApplicationProcess setEventLoopHasIdled:]"];
     return;
   }
-  [FBLogger verboseLog:[NSString stringWithFormat:@"Delay -[XCUIApplicationProcess setEventLoopHasIdled:] by %u seconds", delay]];
+  [FBLogger verboseLog:[NSString stringWithFormat:@"Delay -[XCUIApplicationProcess setEventLoopHasIdled:] by %lu seconds", (unsigned long)delay]];
   orig_set_event_loop_has_idled = (void(*)(id, SEL, BOOL)) method_getImplementation(original);
   Method replace = class_getClassMethod([XCUIApplicationProcessDelay class], @selector(setEventLoopHasIdled:));
   method_setImplementation(original, method_getImplementation(replace));
 }
 
 + (void)setEventLoopHasIdled:(BOOL)idled {
-  sleep(delay);
+  [NSThread sleepForTimeInterval:delay];
   orig_set_event_loop_has_idled(self, _cmd, idled);
 }
 
