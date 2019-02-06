@@ -19,13 +19,14 @@
  '-[XCUIApplicationProcess setAnimationsHaveFinished:]', which are the properties that are checked to
  determine whether an app has quiescenced or not.
  Delaying the call to on of the setters can fix this issue. Setting the environment variable
- 'DELAY_SET_EVENTLOOP_IDLE' will swizzle the method '-[XCUIApplicationProcess setEventLoopHasIdled:]'
+ 'DELAY_SET_EVENTLOOP_IDLE_S' will swizzle the method '-[XCUIApplicationProcess setEventLoopHasIdled:]'
  and add a thread sleep of the value specified in the environment variable in seconds.
  */
 @interface XCUIApplicationProcessDelay : NSObject
 
 @end
 
+static NSString *const DELAY_SET_EVENTLOOP_IDLE_S = @"DELAY_SET_EVENTLOOP_IDLE_S";
 static void (*orig_set_event_loop_has_idled)(id, SEL, BOOL);
 static NSUInteger delay = 0;
 
@@ -33,7 +34,7 @@ static NSUInteger delay = 0;
 
 + (void)load {
   NSDictionary *env = [[NSProcessInfo processInfo] environment];
-  NSString *setEventLoopIdleDelay = [env objectForKey:@"DELAY_SET_EVENTLOOP_IDLE"];
+  NSString *setEventLoopIdleDelay = [env objectForKey:DELAY_SET_EVENTLOOP_IDLE_S];
   if (!setEventLoopIdleDelay || [setEventLoopIdleDelay length] == 0) {
     [FBLogger verboseLog:@"don't delay -[XCUIApplicationProcess setEventLoopHasIdled:]"];
     return;
