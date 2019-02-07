@@ -12,8 +12,8 @@
 #import "FBLogger.h"
 
 /**
- In certain cases WebDriverAgent fails to create a session because it waits for an app to quiescence,
- but they don't always do.
+ In certain cases WebDriverAgent fails to create a session because -[XCUIApplication launch] doesn't return
+ since it waits for the target app to be quiescenced.
  The reason for this seems to be that 'testmanagerd' doesn't send the events WebDriverAgent is waiting for.
  The expected events would trigger calls to '-[XCUIApplicationProcess setEventLoopHasIdled:]' and
  '-[XCUIApplicationProcess setAnimationsHaveFinished:]', which are the properties that are checked to
@@ -40,6 +40,11 @@ static NSTimeInterval delay = 0;
     return;
   }
   delay = [setEventLoopIdleDelay doubleValue];
+  if (fabs(delay) < DBL_EPSILON) {
+    [FBLogger log:[NSString stringWithFormat:@"Value of '%@' has to be greater than zero to delay -[XCUIApplicationProcess setEventLoopHasIdled:]",
+                   EVENTLOOP_IDLE_DELAY_SEC]];
+    return;
+  }
   Method original = class_getInstanceMethod([XCUIApplicationProcess class], @selector(setEventLoopHasIdled:));
   if (original == nil) {
     [FBLogger log:@"Could not find method -[XCUIApplicationProcess setEventLoopHasIdled:]"];
