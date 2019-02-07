@@ -87,8 +87,8 @@
          </EnvironmentVariable>
          <EnvironmentVariable
             key = "EVENTLOOP_IDLE_DELAY_SEC"
-            value = "5"
-            isEnabled = "NO">
+            value = "0"
+            isEnabled = "YES">
          </EnvironmentVariable>
       </EnvironmentVariables>
       <AdditionalOptions>

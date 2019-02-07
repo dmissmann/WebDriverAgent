@@ -40,7 +40,7 @@ static NSTimeInterval delay = 0;
     return;
   }
   delay = [setEventLoopIdleDelay doubleValue];
-  if (fabs(delay) < DBL_EPSILON) {
+  if (delay < DBL_EPSILON) {
     [FBLogger log:[NSString stringWithFormat:@"Value of '%@' has to be greater than zero to delay -[XCUIApplicationProcess setEventLoopHasIdled:]",
                    EVENTLOOP_IDLE_DELAY_SEC]];
     return;
