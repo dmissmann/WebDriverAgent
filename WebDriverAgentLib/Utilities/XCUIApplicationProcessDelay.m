@@ -14,7 +14,7 @@
 
 static void (*orig_set_event_loop_has_idled)(id, SEL, BOOL);
 static NSTimeInterval eventloopIdleDelay = 0;
-static BOOL isEnabled = NO;
+static BOOL isSwizzled = NO;
 // '-[XCUIApplicationProcess setEventLoopHasIdled:]' can be called from different queues.
 // Lets lock the setup and access to the 'eventloopIdleDelay' variable
 static NSLock * lock = nil;
@@ -28,13 +28,13 @@ static NSLock * lock = nil;
 + (void)setEventLoopHasIdledDelay:(NSTimeInterval)delay
 {
   [lock lock];
-  if (!isEnabled && delay < DBL_EPSILON) {
+  if (!isSwizzled && delay < DBL_EPSILON) {
     // don't swizzle methods until we need to
     [lock unlock];
     return;
   }
   eventloopIdleDelay = delay;
-  if (isEnabled) {
+  if (isSwizzled) {
     [lock unlock];
     return;
   }
@@ -58,7 +58,7 @@ static NSLock * lock = nil;
   orig_set_event_loop_has_idled = (void(*)(id, SEL, BOOL)) method_getImplementation(original);
   Method replace = class_getClassMethod([XCUIApplicationProcessDelay class], @selector(setEventLoopHasIdled:));
   method_setImplementation(original, method_getImplementation(replace));
-  isEnabled = YES;
+  isSwizzled = YES;
 }
 
 + (void)setEventLoopHasIdled:(BOOL)idled {
