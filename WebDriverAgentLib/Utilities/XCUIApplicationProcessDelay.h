@@ -25,6 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Delays the invocation of '-[XCUIApplicationProcess setEventLoopHasIdled:]' by the timer interval passed
+ @param delay The duration of the sleep before the original method is called
  */
 + (void)setEventLoopHasIdledDelay:(NSTimeInterval)delay;
 

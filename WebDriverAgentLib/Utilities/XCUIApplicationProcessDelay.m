@@ -65,9 +65,9 @@ static NSLock * lock = nil;
   [lock lock];
   NSTimeInterval delay = eventloopIdleDelay;
   [lock unlock];
-  if (delay >= DBL_EPSILON) {
+  if (delay > 0.0) {
     [FBLogger verboseLog:[NSString stringWithFormat:@"Delaying -[XCUIApplicationProcess setEventLoopHasIdled:] by %.2f seconds", delay]];
-    [NSThread sleepForTimeInterval:eventloopIdleDelay];
+    [NSThread sleepForTimeInterval:delay];
   }
   orig_set_event_loop_has_idled(self, _cmd, idled);
 }

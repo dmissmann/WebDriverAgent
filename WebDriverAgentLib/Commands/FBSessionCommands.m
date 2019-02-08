@@ -94,7 +94,7 @@ static NSString* const SCREENSHOT_QUALITY = @"screenshotQuality";
     [FBConfiguration setShouldUseSingletonTestManager:[requirements[@"shouldUseSingletonTestManager"] boolValue]];
   }
   NSNumber *delay = requirements[@"eventloopIdleDelaySec"];
-  if ([delay doubleValue] > DBL_EPSILON) {
+  if ([delay doubleValue] > 0.0) {
     [XCUIApplicationProcessDelay setEventLoopHasIdledDelay:[delay doubleValue]];
   } else {
     [XCUIApplicationProcessDelay disableEventLoopDelay];
