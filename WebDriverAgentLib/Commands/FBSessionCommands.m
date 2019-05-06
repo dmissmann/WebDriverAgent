@@ -104,7 +104,8 @@ static NSString* const SCREENSHOT_QUALITY = @"screenshotQuality";
 
   FBApplication *app = [[FBApplication alloc] initPrivateWithPath:appPath bundleID:bundleID];
   app.fb_shouldWaitForQuiescence = FBConfiguration.shouldWaitForQuiescence;
-  app.launchArguments = (NSArray<NSString *> *)requirements[@"arguments"] ?: @[];
+  app.launchArguments = [FBSessionCommands sanitizeSafariArguments:requirements
+                                                          bundleId:bundleID];
   app.launchEnvironment = (NSDictionary <NSString *, NSString *> *)requirements[@"environment"] ?: @{};
   [app launch];
 
@@ -118,6 +119,33 @@ static NSString* const SCREENSHOT_QUALITY = @"screenshotQuality";
   }
 
   return FBResponseWithObject(FBSessionCommands.sessionInformation);
+}
+
+/**
+ On iOS 12.2 createSession fails if we pass a '-u' and the URL as process arguments
+ This method removes the '-u' and URL argument
+ */
++ (NSArray<NSString *> *)sanitizeSafariArguments:(NSDictionary *)requirements bundleId:(NSString *)bundleId {
+  NSArray<NSString *> *arguments = (NSArray<NSString *> *)requirements[@"arguments"] ?: @[];
+
+  NSOperatingSystemVersion _12_2 = {12, 2, 0};
+  if (![[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:_12_2]) {
+    return arguments;
+  }
+
+  if (![[bundleId lowercaseString] isEqualToString:@"com.apple.mobilesafari"]) {
+    return arguments;
+  }
+
+  NSMutableArray<NSString *> *copy = [NSMutableArray array];
+  for (unsigned int i = 0; i < arguments.count; ++i) {
+    if ([arguments[i] isEqualToString:@"-u"]) {
+      i++;
+      continue;
+    }
+    [copy addObject:arguments[i]];
+  }
+  return copy;
 }
 
 + (id<FBResponsePayload>)handleSessionAppLaunch:(FBRouteRequest *)request
