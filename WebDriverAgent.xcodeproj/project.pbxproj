@@ -316,7 +316,6 @@
 		64B26508228C5514002A5025 /* XCUIElementDouble.m in Sources */ = {isa = PBXBuildFile; fileRef = 64B26507228C5514002A5025 /* XCUIElementDouble.m */; };
 		64B2650A228CE4FF002A5025 /* FBTVNavigationTracker-Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 64B26509228CE4FF002A5025 /* FBTVNavigationTracker-Private.h */; };
 		64B2650B228CE4FF002A5025 /* FBTVNavigationTracker-Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 64B26509228CE4FF002A5025 /* FBTVNavigationTracker-Private.h */; };
-		7101820E211E1E19002FD3A8 /* CocoaAsyncSocket.framework in Copy frameworks */ = {isa = PBXBuildFile; fileRef = 710181F7211DF584002FD3A8 /* CocoaAsyncSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7101820F211E3EC9002FD3A8 /* CocoaAsyncSocket.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 710181F7211DF584002FD3A8 /* CocoaAsyncSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		710C16CD21497A08006EA1D0 /* XCAccessibilityElement+FBComparison.h in Headers */ = {isa = PBXBuildFile; fileRef = 710C16CB21497A08006EA1D0 /* XCAccessibilityElement+FBComparison.h */; };
 		710C16CE21497A08006EA1D0 /* XCAccessibilityElement+FBComparison.m in Sources */ = {isa = PBXBuildFile; fileRef = 710C16CC21497A08006EA1D0 /* XCAccessibilityElement+FBComparison.m */; };
@@ -365,7 +364,6 @@
 		7155B424224D5BA10042A993 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7155B423224D5B980042A993 /* XCTest.framework */; };
 		7155B426224D5C130042A993 /* XCTAutomationSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7155B425224D5C130042A993 /* XCTAutomationSupport.framework */; };
 		7155B427224D5C170042A993 /* XCTAutomationSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7155B425224D5C130042A993 /* XCTAutomationSupport.framework */; };
-		7155B428224D5CB10042A993 /* YYCache.framework in Copy frameworks */ = {isa = PBXBuildFile; fileRef = 7155B40C224D5A5F0042A993 /* YYCache.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7155B429224D5CC10042A993 /* YYCache.framework in Copy frameworks */ = {isa = PBXBuildFile; fileRef = 641EE73A2240F49D00173FCB /* YYCache.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7155B42A224D5CC50042A993 /* CocoaAsyncSocket.framework in Copy frameworks */ = {isa = PBXBuildFile; fileRef = 7155B411224D5AF90042A993 /* CocoaAsyncSocket.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		7155D703211DCEF400166C20 /* FBMjpegServer.h in Headers */ = {isa = PBXBuildFile; fileRef = 7155D701211DCEF400166C20 /* FBMjpegServer.h */; };
@@ -418,7 +416,6 @@
 		71BD20731F86116100B36EC2 /* XCUIApplication+FBTouchAction.h in Headers */ = {isa = PBXBuildFile; fileRef = 71BD20711F86116100B36EC2 /* XCUIApplication+FBTouchAction.h */; };
 		71BD20741F86116100B36EC2 /* XCUIApplication+FBTouchAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 71BD20721F86116100B36EC2 /* XCUIApplication+FBTouchAction.m */; };
 		71BD20781F869E0F00B36EC2 /* FBAppiumTouchActionsIntegrationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 71BD20771F869E0F00B36EC2 /* FBAppiumTouchActionsIntegrationTests.m */; };
-		71DC3003208759E1007671AA /* RoutingHTTPServer.framework in Copy frameworks */ = {isa = PBXBuildFile; fileRef = AD42DD2B1CF1238500806E5D /* RoutingHTTPServer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AD35D01A1CF1418E00870A75 /* RoutingHTTPServer.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = AD42DD2B1CF1238500806E5D /* RoutingHTTPServer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		AD35D0641CF1C2C300870A75 /* RoutingHTTPServer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD42DD2B1CF1238500806E5D /* RoutingHTTPServer.framework */; };
 		AD35D06C1CF1C35500870A75 /* WebDriverAgentLib.framework in Copy frameworks */ = {isa = PBXBuildFile; fileRef = EE158A991CBD452B00A3E3F0 /* WebDriverAgentLib.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -799,9 +796,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				7155B428224D5CB10042A993 /* YYCache.framework in Copy frameworks */,
-				7101820E211E1E19002FD3A8 /* CocoaAsyncSocket.framework in Copy frameworks */,
-				71DC3003208759E1007671AA /* RoutingHTTPServer.framework in Copy frameworks */,
 				AD35D06C1CF1C35500870A75 /* WebDriverAgentLib.framework in Copy frameworks */,
 			);
 			name = "Copy frameworks";
